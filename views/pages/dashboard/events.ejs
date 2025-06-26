@@ -16,16 +16,16 @@
       </button>
     </div>
   </div>
-  <div class="overflow-x-auto">
-    <table class="w-full text-left text-sm sm:text-base">
+  <div class="overflow-x-auto px-2 sm:px-0">
+    <table class="w-full text-left text-sm sm:text-base min-w-[1000px]">
       <thead class="text-gray-600 border-b">
         <tr>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">ID</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Event Name</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden md:table-cell">Description</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden lg:table-cell">Published On</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden md:table-cell">Category</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden lg:table-cell">Image</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Description</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Published On</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Category</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Image</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Actions</th>
         </tr>
       </thead>
@@ -35,8 +35,8 @@
             <tr class="border-b hover:bg-gray-50">
               <td class="py-2 px-2 sm:px-4 break-words"><%= event.id %></td>
               <td class="py-2 px-2 sm:px-4 break-words"><%= event.title %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden md:table-cell"><%= event.description %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden lg:table-cell"><%= new Date(event.date).toLocaleString('en-IN', {
+              <td class="py-2 px-2 sm:px-4 break-words"><%= event.description %></td>
+              <td class="py-2 px-2 sm:px-4 break-words"><%= new Date(event.date).toLocaleString('en-IN', {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',
@@ -45,8 +45,8 @@
                   hour12: true
                 }) %>
               </td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden md:table-cell"><%= event.category %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden lg:table-cell"><img src="<%= event.image || 'No Image' %>" alt="Event" class="h-[10rem] w-full object-cover"></td>
+              <td class="py-2 px-2 sm:px-4 break-words"><%= event.category %></td>
+              <td class="py-2 px-2 sm:px-4 break-words"><img src="<%= event.image || 'No Image' %>" alt="Event" class="h-[10rem] w-full object-cover"></td>
               <td class="py-2 px-2 sm:px-4 space-x-2 flex flex-wrap gap-2">
                 <a href="/dashboard/posts/post/<%= event.id %>" class="text-yellow-600 hover:underline text-sm sm:text-base"><i class="fas fa-folder"></i></a>
                 <a href="javascript:void(0)" class="text-blue-600 hover:underline text-sm sm:text-base" onclick="showModal('editEventModal-<%= event.id %>', 'editEventContent-<%= event.id %>'); return false;"><i class="fas fa-edit"></i></a>
@@ -118,7 +118,7 @@
             <textarea id="eventDescription-<%= event.id %>" name="description" class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" placeholder="Enter description" required><%= event.description %></textarea>
           </div>
           <div>
-            <label class="block text-sm sm:text-base font-medium mb-1" for="eventDate-<%= event.id %>">Date</label>
+            <label class="block text-sm sm:text-base font-medium mb-1" for="eventDate-<%= event.id %>">Published On</label>
             <% const formattedDate = new Date(event.date).toISOString().split('T')[0] %>
             <input id="eventDate-<%= event.id %>" name="date" type="date" class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" value="<%= formattedDate %>" readonly>
           </div>
@@ -197,7 +197,7 @@
         <textarea name="description" class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" placeholder="Enter description" required></textarea>
       </div>
       <div>
-        <label class="block text-sm sm:text-base font-medium mb-1">Date</label>
+        <label class="block text-sm sm:text-base font-medium mb-1">Publishing On</label>
         <input type="date" name="date" class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" value="<%= new Date().toISOString().split('T')[0] %>" readonly>
       </div>
       <div>

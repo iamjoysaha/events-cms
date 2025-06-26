@@ -110,6 +110,15 @@ import {
     getTotalViews,
 } from './viewsController.js'
 
+import {
+    createBooking,
+    cancelBooking,
+    getBookingsByUser,
+    getBookingsByPost,
+    getBooking,
+    deleteBookingsByUser,
+} from './bookingController.js'
+
 export {
     // categories
     createCategory,
@@ -212,4 +221,12 @@ export {
     createViews,
     getViews,
     getTotalViews,
+
+    // bookings
+    createBooking,
+    cancelBooking,
+    getBooking,
+    getBookingsByPost,
+    getBookingsByUser,
+    deleteBookingsByUser,
 }

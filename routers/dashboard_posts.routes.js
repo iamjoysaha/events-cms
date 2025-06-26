@@ -70,9 +70,9 @@ router.get('/post/:id', async (req, res) => {
 router.post('/post/create/:id', upload.array('images'), async (req, res) => {
     const event_id = Number(req.params.id)
     const sessionUser = req.user
-    const { title, description, venue, location, duration, organizedBy, time, date } = req.body
+    const { title, description, venue, location, duration, organizedBy, time, date, price } = req.body
 
-    const { post, message } = await createPost({ title, description, venue, time, date, location, duration, organizer: organizedBy, status: getStatus(date, time), event_id })
+    const { post, message } = await createPost({ title, description, venue, time, date, location, duration, organizer: organizedBy, status: getStatus(date, time), price, event_id })
 
     const files = req.files || []
 
@@ -134,8 +134,8 @@ router.post('/post/delete/:id', upload.array('images'), async(req, res)=> {
 router.post('/post/update/:id', upload.array('images'), async (req, res) => {
     const post_id = Number(req.params.id)
     const sessionUser = req.user
-    const { title, description, venue, location, duration, organizedBy, time, date } = req.body
-    const { success, message } = await updatePostById(post_id, { title, description, venue, location, duration, organizer: organizedBy, time, date, status: getStatus(date, time) })
+    const { title, description, venue, location, duration, organizedBy, time, date, price } = req.body
+    const { success, message } = await updatePostById(post_id, { title, description, venue, location, duration, organizer: organizedBy, time, date, status: getStatus(date, time), price })
 
     if (!success) {
         req.flash('message', message)

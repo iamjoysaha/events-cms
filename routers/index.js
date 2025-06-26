@@ -9,14 +9,14 @@ import bookingRoutes from './booking.routes.js'
 import dashboardEventRoutes from './dashboard_events.routes.js'
 import dashboardPostRoutes from './dashboard_posts.routes.js'
 import dashboardRoutes from './dashboard.routes.js'
-import { isAuthenticated, isAdmin } from '../middleware/auth.js'
+import { isAuthenticated, isAdmin, isUser } from '../middleware/auth.js'
 
 const router = express.Router()
 
 router.use('/users', userRoutes)
 router.use('/events', eventRoutes)
 router.use('/contactUs', contactUsRoutes)
-router.use('/booking', bookingRoutes)
+router.use('/booking', isAuthenticated, isUser, bookingRoutes)
 
 router.use('/dashboard', isAuthenticated, isAdmin, dashboardRoutes)
 router.use('/dashboard/events', dashboardEventRoutes)

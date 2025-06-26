@@ -21,16 +21,16 @@
   </div>
 </div>
 
-<div class="overflow-x-auto">
-  <table class="min-w-full bg-white border rounded shadow text-sm sm:text-base">
+<div class="overflow-x-auto px-2 sm:px-0">
+  <table class="w-full min-w-[1000px] bg-white border rounded shadow text-sm sm:text-base">
     <thead class="bg-gray-200 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
       <tr>
         <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Name</th>
         <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Email</th>
-        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap hidden sm:table-cell">Username</th>
-        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap hidden md:table-cell">Verified On</th>
-        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap hidden lg:table-cell">Created On</th>
-        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap hidden lg:table-cell">Updated On</th>
+        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Username</th>
+        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Verified On</th>
+        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Created On</th>
+        <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Last Login</th>
         <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Status</th>
         <th class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 text-left whitespace-nowrap">Actions</th>
       </tr>
@@ -41,8 +41,8 @@
           <tr class="border-b hover:bg-gray-100">
             <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words"><%= user.first_name %> <%= user.last_name %></td>
             <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words"><%= user.email %></td>
-            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words hidden sm:table-cell"><%= user.username %></td>
-            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words hidden md:table-cell">
+            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words"><%= user.username %></td>
+            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words">
               <%= new Date(user.email_verified_at).toLocaleString('en-IN', {
                 day: '2-digit',
                 month: 'long',
@@ -52,7 +52,7 @@
                 hour12: true
               }) %>
             </td>
-            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words hidden lg:table-cell">
+            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words">
               <%= new Date(user.createdAt).toLocaleString('en-IN', {
                 day: '2-digit',
                 month: 'long',
@@ -62,7 +62,7 @@
                 hour12: true
               }) %>
             </td>
-            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words hidden lg:table-cell">
+            <td class="py-2 sm:py-3 px-2 sm:px-4 md:px-6 break-words">
               <%= new Date(user.updatedAt).toLocaleString('en-IN', {
                 day: '2-digit',
                 month: 'long',

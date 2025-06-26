@@ -1,7 +1,10 @@
 import express from 'express'
 import { formatDate, formatTime } from '../services/formatter.js'
-import { createViews, getAllPosts, getAllPostsExceptThisId, getCategories, getCategoryById, getEventById, getImagesByPostId, getImageUrlByEventId, getOrganizingCommitteeById, getOrganizingCommittees, getPostById, getPostsByEventId, getRoles, getViews } from '../controller/index.js'
+import { createViews, getAllPosts, getAllPostsExceptThisId, getBooking, getCategories, getCategoryById, getEventById, getImagesByPostId, getImageUrlByEventId, getOrganizingCommitteeById, getOrganizingCommittees, getPostById, getPostsByEventId, getRoleNameById, getRoles, getUserById, getViews } from '../controller/index.js'
+import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 
+dotenv.config()
 const router = express.Router()
 
 // events page
@@ -115,9 +118,21 @@ router.get('/:id', async (req, res) => {
 
 // An event's post page
 router.get('/posts/post/:id', async (req, res) => {
-  const notify = req.flash('message')[0]
-  const bookingStatus = req.flash('bookingStatus')[0]
-  const bookingText = bookingStatus ? 'Booked!' : 'Book Now'
+  const notify = req.flash('message')[0] || req.query.notify
+
+  let user = null
+  let booking = null
+  const token = req.cookies?.token
+
+  try {
+    if (token) {
+      const decoded = jwt.verify(token, process.env.MY_SECRET_KEY)
+      const result = await getUserById(decoded._id)
+      user = result.user
+    }
+  } catch (err) {
+    console.error('JWT error:', err.message)
+  }
 
   const postId = req.params.id
   const pageNo = parseInt(req.query.pageNo) || 1
@@ -126,10 +141,15 @@ router.get('/posts/post/:id', async (req, res) => {
   const { post } = await getPostById(postId)
   const { images } = await getImagesByPostId(post.id)
 
+  if (user) {
+    const result = await getBooking(user.id, postId)
+    booking = result.booking
+  }
+
   const { posts = [], totalRecords } = await getAllPostsExceptThisId(post.id, pageNo, pageSize)
   const totalPages = Math.ceil(totalRecords / pageSize)
 
-  let postsWithImages = await Promise.all(
+  const postsWithImages = await Promise.all(
     posts.map(async post => {
       const { images = [] } = await getImagesByPostId(post.id)
       const { event } = await getEventById(post.event_id)
@@ -151,17 +171,18 @@ router.get('/posts/post/:id', async (req, res) => {
   const { view } = await getViews(postId)
 
   res.render('pages/post', {
+    user,
     roles,
     view,
     organizingCommitties,
     post: post || null,
     images: images || [],
-    postsWithImages: postsWithImages || [],
+    postsWithImages,
     query: req.query,
     totalPages,
     pageNo,
     notify,
-    bookingText,
+    bookNowBtnStatus: booking ? booking.status : 'Book Now',
   })
 })
 

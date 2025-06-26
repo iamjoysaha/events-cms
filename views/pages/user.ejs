@@ -19,7 +19,7 @@
             </div>
 
             <div class="mt-6 flex justify-between">
-                <form action="/users/delete/<%= user.id %>" method="POST">
+                <form action="/users/delete/user/<%= user.id %>" method="POST" onsubmit="return confirm('Are you sure want to delete your account?')">
                     <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
                 </form>
                 <form action="/users/logout" method="POST">

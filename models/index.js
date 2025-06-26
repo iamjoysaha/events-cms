@@ -7,6 +7,7 @@ import Posts from './Posts.js'
 import Images from './Images.js'
 import Activities from './Activities.js'
 import Views from './Views.js'
+import Booking from './Booking.js'
 
 // defining relationships
 Category.hasMany(Events, { foreignKey: "category_id" })
@@ -42,4 +43,5 @@ export {
   Images,
   Activities,
   Views,
+  Booking,
 }

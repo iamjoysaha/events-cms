@@ -22,6 +22,7 @@ import {
     deleteImageByEventId,
     getImageByEventId,
     deleteActivityByUserId,
+    deleteBookingsByUser,
 } from '../controller/index.js'
 import { deleteCloudinaryImage } from '../services/cloudinary.js'
 
@@ -133,13 +134,29 @@ router.all('/logout', (req, res) => { // TODO: NOT DESTROYING SESSION FOR NOW!
   res.redirect('/users/login')
 })
 
-// delete user
+// delete only user
+router.post('/delete/user/:id', async (req, res) => {
+    const userId = req.params.id
+    const { user, userMsg } = await getUserById(userId)
+
+    if (!user) {
+        req.flash('message', userMsg)
+        return res.redirect(`/users/user/${userId}`)
+    }
+
+    await deleteBookingsByUser(user.id)
+    const { message } = await deleteUserById(user.id)
+
+    req.flash('message', message)
+    return res.redirect('/users/login')
+})
+
+// This is only for admin
 // if suppose, admin deleted his profile so, it's associate events and posts gonna be deleted!
 router.post('/delete/:id', async (req, res) => {
     const userId = req.params.id
     const sessionUser = req.user
     const { user, message: userMsg } = await getUserById(userId)
-    console.log(user) // testing
 
     if (!user) {
         req.flash('message', userMsg)
@@ -169,6 +186,7 @@ router.post('/delete/:id', async (req, res) => {
         await deleteEventById(event.id)
     }
 
+    await deleteBookingsByUser(user.id)
     const { success, message } = await deleteUserById(user.id)
 
     if (!success) {

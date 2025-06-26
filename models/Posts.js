@@ -44,6 +44,10 @@ const Posts = sequelize.define('posts_model', {
       type: DataTypes.DATEONLY,
       defaultValue: DataTypes.NOW
   },
+  price: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   // Foreign keys
   event_id: {
     type: DataTypes.INTEGER,

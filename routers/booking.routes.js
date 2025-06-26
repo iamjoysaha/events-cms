@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 
 import { getPostById, getUserById } from '../controller/index.js'
-import { getNotified } from '../services/mail.js'
+import { createOrder, verifyPayment } from '../services/payment.js'
 
 dotenv.config()
 const router = express.Router()
@@ -11,7 +11,7 @@ const router = express.Router()
 router.get('/:id', async (req, res) => {
     if (!req.cookies.token) {
         req.flash('message', 'Kindly Login or Register Yourself First!')
-        return res.redirect('/users/register')
+        return res.redirect('/users/login')
     }
 
     const postId = req.params.id
@@ -21,24 +21,15 @@ router.get('/:id', async (req, res) => {
     const { user } = await getUserById(decoded._id)
     const { post } = await getPostById(postId)
 
-    await getNotified({
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-        subject: `Booking Confirmed: ${post.title}`,
-        message: `<p>Hi ${user.first_name},</p>
-            <p>Your booking for the event "<strong>${post.title}</strong>" has been successfully confirmed.</p>
-            <p><strong>Show Details:</strong><br>${post.description}</p>
-            <p>We look forward to your participation and hope you have a great experience!</p>
-            <p>If you have any questions, feel free to reply to this email.</p>
-            <p>Best regards,<br><strong>Events CMS Team</strong></p>`
+    const { id, amount, currency } = await createOrder(post.price)
+
+    res.render('pages/booking', { post, user, orderId: id, amount,
+        keyId: process.env.RAZORPAY_KEY_ID
     })
-
-    let bookingStatus = true
-    req.flash('message', 'Booking successfully done!')
-    req.flash('bookingStatus', bookingStatus)
-
-    res.redirect(`/events/posts/post/${postId}`)
 })
+
+// verifying payment
+router.post('/payment/verify', verifyPayment)
 
 
 export default router

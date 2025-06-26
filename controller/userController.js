@@ -37,13 +37,19 @@ async function createUser({ first_name, last_name, email, password, username, st
 
 async function getUser({email, password}) {
     try {
-        const user = await Users.findOne({ where: { email, is_owner: true, status: 1 } })
+        const user = await Users.findOne({ where: { email, is_owner: true } })
     
         if (!user) 
             return { success: false, message: 'User not found!' }
     
         const isMatch = await bcrypt.compare(password, user.password)
-        return isMatch ? { success: true, user } : { success: false, message: 'Invalid password' }
+        if (isMatch) {
+            await user.update({ status: 1, updatedAt: new Date() })
+            return { success: true, user }
+        } 
+        else {
+            return { success: false, message: 'Invalid password' }
+        }
     }
     catch (error) {
         console.log('Exception occurred inside getUser!\n', error)
@@ -209,9 +215,10 @@ async function updateAllUsersStatus() {
 
         for (const user of users) {
             const verifiedDate = dayjs(user.email_verified_at)
-            const isOlderThan90Days = today.diff(verifiedDate, 'day') >= 10 // testing
+            const isOlderUser = today.diff(verifiedDate, 'day') >= 5
+            // const isOlderUser = today.diff(verifiedDate, 'minute') >= 1
 
-            if (isOlderThan90Days) {
+            if (isOlderUser) {
                 await user.update({ status: 0 })
             }
         }

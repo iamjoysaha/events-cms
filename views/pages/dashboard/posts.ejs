@@ -31,40 +31,41 @@
     </a>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="w-full text-left text-sm sm:text-base">
+  <div class="w-full overflow-x-auto">
+    <table class="w-full table-auto text-left text-sm sm:text-base min-w-[900px]">
       <thead class="text-gray-600 border-b">
         <tr>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">ID</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Post Title</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden md:table-cell">Description</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden lg:table-cell">Venue</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden lg:table-cell">Location</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden md:table-cell">Duration (in hrs)</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden xl:table-cell">Organized By</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden lg:table-cell">Date</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap hidden md:table-cell">Time</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Status</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Views</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap">Actions</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">ID</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Post Title</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Description</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Venue</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Location</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Duration (in hrs)</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Organized By</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Date</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Time</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Price</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Status</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Views</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Actions</th>
         </tr>
       </thead>
       <tbody>
         <% if(posts && posts.length) { %>
           <% posts.forEach(post => { %>
             <tr class="border-b hover:bg-gray-50">
-              <td class="py-2 px-2 sm:px-4 break-words"><%= post.id %></td>
-              <td class="py-2 px-2 sm:px-4 break-words"><%= post.title %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden md:table-cell"><%= post.description %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden lg:table-cell"><%= post.venue %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden lg:table-cell"><%= post.location %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden md:table-cell"><%= post.duration %> hrs</td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden xl:table-cell"><%= post.organizer %></td>
-              <td class="py-2 px-2 sm:px-4 break-words hidden lg:table-cell">
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.id %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.title %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.description %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.venue %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.location %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.duration %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]"><%= post.organizer %></td>
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]">
                 <%= new Date(post.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) %>
               </td>
 
-              <td class="py-2 px-2 sm:px-4 break-words hidden md:table-cell">
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]">
                 <% 
                   const [hours, minutes] = post.time.split(':');
                   const date = new Date();
@@ -74,19 +75,20 @@
                 %>
                 <%= formattedTime %>
               </td>
-              <td class="py-2 px-2 sm:px-4">
+              <td class="py-2 px-2 sm:px-4 break-words min-w-[100px]">₹ <%= post.price %></td>
+              <td class="py-2 px-2 sm:px-4 min-w-[100px]">
                 <% let statusColor = '' %>
                 <% if (post.status === 'upcoming') { statusColor = 'text-blue-600' } %>
                 <% if (post.status === 'ongoing') { statusColor = 'text-yellow-600' } %>
                 <% if (post.status === 'completed') { statusColor = 'text-green-600' } %>
                 <span class="<%= statusColor %> font-semibold capitalize text-sm sm:text-base"><%= post.status %></span>
               </td>
-              <td class="py-2 px-2 sm:px-4">
-                <span class="text-sm sm:text-base">
+              <td class="py-2 px-2 sm:px-4 min-w-[100px]">
+                <span class="text-sm sm:text-base font-semibold text-green-600">
                   <%= views[post.id]?.dataValues?.views || 0 %>
                 </span>
               </td>
-              <td class="py-2 px-2 sm:px-4 space-x-2 flex flex-wrap gap-2">
+              <td class="py-2 px-2 sm:px-4 space-x-2 flex flex-wrap gap-2 min-w-[100px]">
                 <a href="javascript:void(0)" onclick="openModal('editPostModal-<%= post.id %>')" class="text-blue-600 hover:underline text-sm sm:text-base"><i class="fas fa-edit"></i></a>
                 <form action="/dashboard/posts/post/delete/<%= post.id %>?status=<%= selectedStatus || '' %>&date=<%= selectedDate || '' %>" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this post?')">
                   <button type="submit" class="text-red-600 hover:underline bg-transparent border-none p-0 cursor-pointer text-sm sm:text-base"><i class="fa fa-trash" aria-hidden="true"></i></button>
@@ -188,6 +190,11 @@
             <input type="time" id="editPostTime-<%= post.id %>" name="time" value="<%= post.time %>" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
           </div>
 
+          <div>
+            <label for="editPostPrice-<%= post.id %>" class="block text-sm sm:text-base font-medium mb-1">Price</label>
+            <input type="number" id="editPostPrice-<%= post.id %>" name="price" value="<%= post.price %>" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
+          </div>
+
           <div class="mb-4">
             <label class="block text-sm sm:text-base font-medium mb-1" for="postImage-<%= post.id %>">Post Image</label>
             <input id="postImage-<%= post.id %>" name="images" type="file" multiple accept="image/*" class="w-full border rounded px-3 py-2 text-sm sm:text-base">
@@ -257,6 +264,11 @@
       <div>
         <label for="postDate" class="block text-sm sm:text-base font-medium mb-1">Date</label>
         <input type="date" id="postDate" name="date" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
+      </div>
+
+      <div>
+        <label for="postDate" class="block text-sm sm:text-base font-medium mb-1">Price</label>
+        <input type="number" id="postPrice" name="price" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
       </div>
 
       <div>

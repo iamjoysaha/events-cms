@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import express from 'express'
 import bcrypt from 'bcrypt'
 
-import { createActivity, createUser, deleteUserById, getActiveUsers, getActivities, getAllPosts, getAllUpcomingPosts, getCategories, getCategoryById, getEventById, getEventsByOrganizingCommitteeId, getOnlyUsers, getOrganizingCommitteeById, getPostsByEventId, getTotalViews, getUserById, updateUserById } from '../controller/index.js'
+import { createActivity, createUser, deleteBookingsByUser, deleteUserById, getActiveUsers, getActivities, getAllPosts, getAllUpcomingPosts, getCategories, getCategoryById, getEventById, getEventsByOrganizingCommitteeId, getOnlyUsers, getOrganizingCommitteeById, getPostsByEventId, getTotalViews, getUserById, updateUserById } from '../controller/index.js'
 import { getStatus } from '../services/status.js'
 import { sendMailToRegisteredUser } from '../services/mail.js'
 
@@ -104,6 +104,7 @@ router.post('/delete/user/:id', async (req, res) => {
 
     const id = req.params.id
     const { user } = await getUserById(id)
+    await deleteBookingsByUser(user.id)
     const { message } = await deleteUserById(user.id)
     await createActivity({ actions: message? message : null, user_id: decoded._id })
 

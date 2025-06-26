@@ -1,0 +1,49 @@
+<h2>Booking: <%= post.title %></h2>
+<p>Price: ₹<%= amount / 100 %></p>
+
+<button id="rzp-button">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document.getElementById('rzp-button').onclick = function (e) {
+    var options = {
+      key: "<%= keyId %>",
+      amount: "<%= amount %>",
+      currency: "INR",
+      name: "<%= post.title %>",
+      description: "Event Booking",
+      order_id: "<%= orderId %>",
+      handler: function (response) {
+        fetch('/booking/payment/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...response,
+            postId: "<%= post.id %>"
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            window.location.href = `/events/posts/post/<%= post.id %>?notify=Booking successful!`;
+          } else {
+            window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment failed!`;
+          }
+        });
+      },
+      modal: {
+        ondismiss: function () {
+          // Redirect or show notification if user closes the payment modal
+          window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment was cancelled!`;
+        }
+      },
+      theme: {
+        color: "#F37254"
+      }
+    };
+
+    var rzp = new Razorpay(options);
+    rzp.open();
+    e.preventDefault();
+  }
+</script>

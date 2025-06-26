@@ -14,18 +14,18 @@
         <!-- Dropdown Content -->
         <div class="dropdown-content bg-white p-4 rounded-b shadow-md transition-all duration-300 ease-in-out max-h-0 opacity-0 invisible">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm sm:text-base">
+            <table class="w-full text-left text-sm sm:text-base min-w-[900px]">
               <thead class="text-gray-600 border-b">
                 <tr>
                   <th class="py-2 px-4">ID</th>
                   <th class="py-2 px-4">Post Title</th>
-                  <th class="py-2 px-4 hidden md:table-cell">Description</th>
-                  <th class="py-2 px-4 hidden lg:table-cell">Venue</th>
-                  <th class="py-2 px-4 hidden lg:table-cell">Location</th>
-                  <th class="py-2 px-4 hidden md:table-cell">Duration (hrs)</th>
-                  <th class="py-2 px-4 hidden xl:table-cell">Organized By</th>
-                  <th class="py-2 px-4 hidden lg:table-cell">Date</th>
-                  <th class="py-2 px-4 hidden md:table-cell">Time</th>
+                  <th class="py-2 px-4">Description</th>
+                  <th class="py-2 px-4">Venue</th>
+                  <th class="py-2 px-4">Location</th>
+                  <th class="py-2 px-4">Duration (hrs)</th>
+                  <th class="py-2 px-4">Organized By</th>
+                  <th class="py-2 px-4">Date</th>
+                  <th class="py-2 px-4">Time</th>
                   <th class="py-2 px-4">Status</th>
                 </tr>
               </thead>
@@ -35,15 +35,15 @@
                     <tr class="border-b hover:bg-gray-100">
                       <td class="py-2 px-4"><%= post.id %></td>
                       <td class="py-2 px-4"><%= post.title %></td>
-                      <td class="py-2 px-4 hidden md:table-cell"><%= post.description %></td>
-                      <td class="py-2 px-4 hidden lg:table-cell"><%= post.venue %></td>
-                      <td class="py-2 px-4 hidden lg:table-cell"><%= post.location %></td>
-                      <td class="py-2 px-4 hidden md:table-cell"><%= post.duration %> hrs</td>
-                      <td class="py-2 px-4 hidden xl:table-cell"><%= post.organizer %></td>
-                      <td class="py-2 px-4 hidden lg:table-cell">
+                      <td class="py-2 px-4"><%= post.description %></td>
+                      <td class="py-2 px-4"><%= post.venue %></td>
+                      <td class="py-2 px-4"><%= post.location %></td>
+                      <td class="py-2 px-4"><%= post.duration %> hrs</td>
+                      <td class="py-2 px-4"><%= post.organizer %></td>
+                      <td class="py-2 px-4">
                         <%= new Date(post.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) %>
                       </td>
-                      <td class="py-2 px-4 hidden md:table-cell">
+                      <td class="py-2 px-4">
                         <% 
                           const [hours, minutes] = post.time.split(':');
                           const formattedTime = new Date(0, 0, 0, hours, minutes).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });

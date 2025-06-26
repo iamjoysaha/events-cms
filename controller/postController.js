@@ -3,9 +3,9 @@ import { Events, Posts } from '../models/index.js'
 import { getImagesByPostId } from './imagesController.js'
 import { getStatus } from '../services/status.js'
 
-async function createPost({ title, description, venue, time, date, location, duration, organizer, status, event_id }) {
+async function createPost({ title, description, venue, time, date, location, duration, organizer, status, price, event_id }) {
     try {
-        const post = await Posts.create({ title, description, venue, time, date, location, duration, organizer, status, event_id })
+        const post = await Posts.create({ title, description, venue, time, date, location, duration, organizer, status, price, event_id })
 
         return { success: true, message: 'Post created!', post }
     }
