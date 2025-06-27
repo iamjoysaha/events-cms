@@ -11,7 +11,7 @@ const seedData = async () => {
   ])
 
   await OrganizingCommittee.bulkCreate([
-    { name: 'Balaji Shows' },
+    { name: 'Marvel Cinematic Universe' },
   ])
 
   await Category.bulkCreate([

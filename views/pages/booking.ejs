@@ -1,49 +1,114 @@
-<h2>Booking: <%= post.title %></h2>
-<p>Price: ₹<%= amount / 100 %></p>
-
-<button id="rzp-button">Pay Now</button>
-
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  document.getElementById('rzp-button').onclick = function (e) {
-    var options = {
-      key: "<%= keyId %>",
-      amount: "<%= amount %>",
-      currency: "INR",
-      name: "<%= post.title %>",
-      description: "Event Booking",
-      order_id: "<%= orderId %>",
-      handler: function (response) {
-        fetch('/booking/payment/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...response,
-            postId: "<%= post.id %>"
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') {
-            window.location.href = `/events/posts/post/<%= post.id %>?notify=Booking successful!`;
-          } else {
-            window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment failed!`;
-          }
-        });
-      },
-      modal: {
-        ondismiss: function () {
-          // Redirect or show notification if user closes the payment modal
-          window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment was cancelled!`;
-        }
-      },
-      theme: {
-        color: "#F37254"
-      }
-    };
-
-    var rzp = new Razorpay(options);
-    rzp.open();
-    e.preventDefault();
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
-</script>
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out;
+  }
+</style>
+<div class="bg-gradient-to-br from-gray-50 to-gray-200 font-sans antialiased">
+  <div class="min-h-screen flex items-center justify-center p-4">
+    <div
+      class="bg-white p-8 rounded-2xl shadow-xl max-w-lg w-full animate-fadeIn"
+    >
+      <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-4">
+        Event Booking
+      </h1>
+      <p class="text-center text-gray-500 mb-6">
+        Reserve your spot for an unforgettable experience!
+      </p>
+
+      <div class="bg-gray-50 p-6 rounded-lg mb-6">
+        <h2 class="text-2xl font-semibold text-gray-800">
+          Booking: <%= post.title %>
+        </h2>
+        <p class="text-lg text-gray-600 mt-2">
+          Price:
+          <span class="font-bold text-green-600">₹<%= amount / 100 %></span>
+        </p>
+      </div>
+
+      <button
+        id="rzp-button"
+        class="w-full bg-gradient-to-r from-red-600 to-red-700 text-white py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 8c-1.657 0-3 1.343-3 3s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zm0 0c-2.761 0-5 2.239-5 5s2.239 5 5 5 5-2.239 5-5-2.239-5-5-5zm0 0C6.477 8 2 12.477 2 18h20c0-5.523-4.477-10-10-10z"
+          ></path>
+        </svg>
+        Pay Now
+      </button>
+
+      <div class="mt-6 text-sm text-gray-500 text-center">
+        <p>
+          Secure payment powered by
+          <span class="font-semibold text-gray-700">Razorpay</span>
+        </p>
+        <p class="mt-1">
+          Your payment is protected with industry-standard encryption.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.getElementById("rzp-button").onclick = function (e) {
+      var options = {
+        key: "<%= keyId %>",
+        amount: "<%= amount %>",
+        currency: "INR",
+        name: "<%= post.title %>",
+        description: "Event Booking",
+        order_id: "<%= orderId %>",
+        handler: function (response) {
+          fetch("/booking/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...response,
+              postId: "<%= post.id %>",
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.status === "success") {
+                window.location.href = `/events/posts/post/<%= post.id %>?notify=Booking successful!`;
+              } else {
+                window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment failed!`;
+              }
+            });
+        },
+        modal: {
+          ondismiss: function () {
+            window.location.href = `/events/posts/post/<%= post.id %>?notify=Payment was cancelled!`;
+          },
+        },
+        theme: {
+          color: "#F37254",
+        },
+      };
+
+      var rzp = new Razorpay(options);
+      rzp.open();
+      e.preventDefault();
+    };
+  </script>
+</div>
