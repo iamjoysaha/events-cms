@@ -1,4 +1,4 @@
-<!-- Contact Us Section -->
+<!-- Contact Us Section (unchanged) -->
 <section id="contact-us" class="bg-gray-100 py-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <h2 class="text-3xl font-bold text-gray-800 mb-8 font-heading text-center">Contact Us</h2>
@@ -54,7 +54,7 @@
             <i class="fas fa-map-marker-alt text-red-600 mt-1 mr-3"></i>
             <div>
               <h4 class="text-gray-800 font-semibold">Address</h4>
-              <p class="text-gray-600">Lake Town, Bangur Avenue, Kolkata, West Bengal, India - 700055</p>
+              <p class="text-gray-600">Lake Town, Kolkata, West Bengal, India</p>
             </div>
           </div>
           
@@ -62,7 +62,7 @@
             <i class="fas fa-phone-alt text-red-600 mt-1 mr-3"></i>
             <div>
               <h4 class="text-gray-800 font-semibold">Phone</h4>
-              <p class="text-gray-600">+91 9073525312 (Mon-Fri, 10:00 AM - 5:00 PM IST)</p>
+              <p class="text-gray-600">+919073525312</p>
             </div>
           </div>
           
@@ -70,7 +70,7 @@
             <i class="fas fa-envelope text-red-600 mt-1 mr-3"></i>
             <div>
               <h4 class="text-gray-800 font-semibold">Email</h4>
-              <p class="text-gray-600">sonettjsaha@gmail.com</p>
+              <p class="text-gray-600"><a href="mailto:sonettjsaha@gmail.com" class="text-red-600 font-bold hover:underline">sonettjsaha@gmail.com</a></p>
             </div>
           </div>
           
@@ -87,6 +87,38 @@
     </div>
   </div>
 </section>
+
+<!-- Contribution Section -->
+<section id="contribute" class="bg-gray-100 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8 font-heading text-center">Support Our Work</h2>
+    
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4 font-heading">Contribute to the Project</h3>
+      <p class="text-gray-600 mb-6">Your support helps us continue building and improving this project. Scan the QR code below to make a contribution or contact us for more details.</p>
+      
+      <div class="flex flex-col items-center">
+        <div id="qr-code" class="mb-6 w-48 h-48" aria-label="QR code for contributions to Joy Saha"></div>
+        <p class="text-gray-600 text-center">Use the QR code above to send contributions to the admin via UPI.</p>
+        <p class="text-gray-600 text-center mt-2">For alternative contribution methods, email us at <a href="mailto:sonettjsaha@gmail.com" class="text-red-600 font-bold hover:underline">sonettjsaha@gmail.com</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Include QRCode.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // Generate QR code
+  new QRCode(document.getElementById("qr-code"), {
+    text: "upi://pay?pa=9073525312@axl&pn=Joy%20Saha&cu=INR",
+    width: 192,
+    height: 192,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
 
 <% if (notify) { %>
   <script>
