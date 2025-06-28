@@ -1,6 +1,6 @@
 import { Op } from 'sequelize'
 import moment from 'moment'
-import { Events, Posts, Users } from '../models/index.js'
+import { Events, Posts, Users, Category } from '../models/index.js'
 import { sendMailToRegisteredUser } from '../services/mail.js'
 
 async function createEvent({title, description, date, category_id, organizing_committee_id, role_id}) {
@@ -205,6 +205,37 @@ async function sendUpcomingEventEmails() {
   }
 }
 
+async function getEventsByDateRange(startDate, endDate) {
+  try {
+    const events = await Events.findAll({
+      where: {
+        date: {
+          [Op.between]: [startDate, endDate]
+        }
+      }
+    })
+    return events.length ? { success: true, events } : { success: false, message: 'No events found!' }
+  } 
+  catch (error) {
+    console.error('Exception in getEventsByDateRange:\n', error)
+    return { success: false, message: 'Error fetching events by date' }
+  }
+}
+
+async function getEventsByCategoryName(categoryName) {
+  try {
+    const category = await Category.findOne({ where: { category: categoryName } })
+    if (!category) return { success: false, message: 'Category not found' }
+
+    const events = await Events.findAll({ where: { category_id: category.id } })
+    return events.length ? { success: true, events } : { success: false, message: 'No events found for this category' }
+  } 
+  catch (error) {
+    console.error('Error in getEventsByCategoryName:\n', error)
+    return { success: false, message: 'Exception occurred while fetching events by category' }
+  }
+}
+
 export {
     createEvent,
     deleteEventById,
@@ -219,4 +250,6 @@ export {
     getAllEvents,
 
     sendUpcomingEventEmails,
+    getEventsByDateRange,
+    getEventsByCategoryName,
 }

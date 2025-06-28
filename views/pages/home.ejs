@@ -6,11 +6,6 @@
     <div class="relative text-center text-white p-8 max-w-5xl w-full mx-auto">
       <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold font-heading text-white mb-6 animate-fade-in-down">Welcome to Event CMS</h1>
       <p class="text-lg sm:text-xl md:text-2xl text-gray-100 mb-8 animate-fade-in-up">Discover the best events in your city—college events, concerts, movies, sports, and more!</p>
-      <!-- <div class="search-bar flex items-center max-w-2xl mx-auto bg-white/90 rounded-full shadow-lg p-2 transition-all duration-300 hover:shadow-xl">
-        <i class="fas fa-search text-gray-500 mx-4"></i>
-        <input type="text" placeholder="Search for events, movies, and more..." class="w-full bg-transparent outline-none text-gray-900 text-lg" />
-        <button class="ml-4 bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition-all duration-300 font-semibold">Search</button>
-      </div> -->
     </div>
 </section>
 
@@ -26,6 +21,7 @@
                 <div class="p-4">
                   <h3 class="text-xl font-bold text-gray-800 font-heading"><%= event.title %></h3>
                   <p class="text-gray-600 text-sm"><%= event.category %></p>
+                  <input type="hidden" name="eventId" value="<%= event.id %>">
                   <p class="text-l font-bold text-red-700 text-sm mt-2"><%= event.organizer %></p>
                 </div>
               </a>
@@ -56,10 +52,6 @@
 
                 <div class="p-5">
                   <h4 class="text-2xl font-semibold text-gray-900 font-heading mb-2 line-clamp-2"><%= post.title %></h4>
-                  <!-- <div class="space-y-1 text-gray-600 text-sm">
-                    <p><i class="fas fa-user mr-2"></i>Organizer: <%= post.organizer %></p>
-                  </div> -->
-
                   <p class="mt-4 text-lg font-bold
                     <%= post.status === 'upcoming' ? 'text-red-600' : post.status === 'ongoing' ? 'text-blue-600' : 'text-green-600' %>">
                     <%= post.status.charAt(0).toUpperCase() + post.status.slice(1) %>
@@ -74,58 +66,116 @@
       </div>
     </div>
     
-    <!-- add pagination here if needed -->
-      <% if (totalPages > 1) { %>
-          <div class="mt-8 flex justify-center space-x-1">
-            <% const maxPagesToShow = 3;
-              const half = Math.floor(maxPagesToShow / 2);
-              let startPage = Math.max(1, pageNo - half);
-              let endPage = startPage + maxPagesToShow - 1;
-              if (endPage > totalPages) {
-                  endPage = totalPages;
-                  startPage = Math.max(1, endPage - maxPagesToShow + 1);
-              }
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="mt-8 flex justify-center space-x-1">
+          <% const maxPagesToShow = 3;
+            const half = Math.floor(maxPagesToShow / 2);
+            let startPage = Math.max(1, pageNo - half);
+            let endPage = startPage + maxPagesToShow - 1;
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
 
-              // Helper: build query string from arrays
-              const buildQuery = () => {
-                let q = '';
-                if (query.category) q += [].concat(query.category).map(c => `&category=${c}`).join('');
-                if (query.status) q += [].concat(query.status).map(s => `&status=${s}`).join('');
-                if (query.year) q += [].concat(query.year).map(y => `&year=${y}`).join('');
-                if (query.organizer) q += `&organizer=${query.organizer}`;
-                if (query.organizer) q += [].concat(query.organizer).map(o => `&organizer=${o}`).join('');
-                return q;
-              };
-              const extraQuery = buildQuery();
-            %>
+            const buildQuery = () => {
+              let q = '';
+              if (query.category) q += [].concat(query.category).map(c => `&category=${c}`).join('');
+              if (query.status) q += [].concat(query.status).map(s => `&status=${s}`).join('');
+              if (query.year) q += [].concat(query.year).map(y => `&year=${y}`).join('');
+              if (query.organizer) q += `&organizer=${query.organizer}`;
+              if (query.organizer) q += [].concat(query.organizer).map(o => `&organizer=${o}`).join('');
+              return q;
+            };
+            const extraQuery = buildQuery();
+          %>
 
-            <% if (pageNo > 1) { %>
-              <a href="?pageNo=<%= pageNo - 1 %><%= extraQuery %>"
-                class="px-2 py-1 text-sm rounded border font-medium bg-white text-gray-800 border-gray-300 hover:bg-gray-100">
-                &lt;
-              </a>
-            <% } %>
+          <% if (pageNo > 1) { %>
+            <a href="?pageNo=<%= pageNo - 1 %><%= extraQuery %>"
+              class="px-2 py-1 text-sm rounded border font-medium bg-white text-gray-800 border-gray-300 hover:bg-gray-100">
+              <
+            </a>
+          <% } %>
 
-            <% for (let i = startPage; i <= endPage; i++) { %>
-              <a href="?pageNo=<%= i %><%= extraQuery %>"
-                class="px-3 py-1 text-sm rounded border font-medium transition 
-                <%= pageNo === i ? 'bg-red-500 text-white border-red-600' : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100' %>">
-                <%= i %>
-              </a>
-            <% } %>
+          <% for (let i = startPage; i <= endPage; i++) { %>
+            <a href="?pageNo=<%= i %><%= extraQuery %>"
+              class="px-3 py-1 text-sm rounded border font-medium transition 
+              <%= pageNo === i ? 'bg-red-500 text-white border-red-600' : 'bg-white text-gray-800 border-gray-300 hover:bg-gray-100' %>">
+              <%= i %>
+            </a>
+          <% } %>
 
-            <% if (pageNo < totalPages) { %>
-              <a href="?pageNo=<%= pageNo + 1 %><%= extraQuery %>"
-                class="px-2 py-1 text-sm rounded border font-medium bg-white text-gray-800 border-gray-300 hover:bg-gray-100">
-                &gt;
-              </a>
-            <% } %>
-          </div>
-        <% } %>
+          <% if (pageNo < totalPages) { %>
+            <a href="?pageNo=<%= pageNo + 1 %><%= extraQuery %>"
+              class="px-2 py-1 text-sm rounded border font-medium bg-white text-grayგ
+
+              gray-800 border-gray-300 hover:bg-gray-100">
+              >
+            </a>
+          <% } %>
+        </div>
+      <% } %>
 </section>
 
-<!-- Additional CSS for Animations -->
+<!-- Chatbot Icon and Chat Box -->
+<div id="chatbot-icon" class="sticky bottom-6 right-6 z-50 transition-opacity duration-300 ease-in-out opacity-0" style="float: right;" aria-label="Open Event Assistant Chat">
+  <button class="bg-red-600 text-white rounded-full p-4 shadow-lg hover:bg-red-700 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 animate-pulse-initial" title="Talk to our AI Assistant">
+    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+    </svg>
+  </button>
+</div>
+
+<div id="chatbot-box" class="sticky bottom-6 right-6 w-80 sm:w-96 max-h-[600px] bg-white rounded-2xl shadow-xl hidden flex-col z-50 overflow-hidden transition-opacity duration-300 ease-in-out opacity-0" style="float: right;" aria-live="polite">
+  <div class="bg-red-600 text-white p-4 rounded-t-2xl flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+      </svg>
+      <h3 class="text-lg font-semibold">Event Assistant</h3>
+    </div>
+    <button id="close-chatbot" class="text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-600" aria-label="Close Event Assistant Chat">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  <div id="chatbot-messages" class="flex-1 p-4 overflow-y-auto bg-gray-100 space-y-4" role="log">
+    <div class="chatbot-message ai bg-red-50 text-gray-800 p-3 rounded-xl max-w-[85%]">
+      Welcome! I'm your Event Assistant. Click the chat icon to enable sound and start exploring events!
+    </div>
+  </div>
+  <div class="p-4 bg-white border-t border-gray-200">
+    <div class="flex items-center bg-gray-100 rounded-xl overflow-hidden">
+      <input id="chatbot-input" type="text" placeholder="Ask about events..." class="w-full p-3 bg-transparent outline-none text-gray-800 text-sm" aria-label="Type your message" />
+      <button id="chatbot-send" class="bg-red-600 text-white p-3 hover:bg-red-700 transition-all duration-300 focus:ring-2 focus:ring-red-500 focus:ring-offset-2" aria-label="Send message">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Audio for Popup Sound -->
+<audio id="popup-sound" src="/audio/audio_1.mp3" preload="auto"></audio>
+
+<!-- Additional CSS for Animations, Chatbot, and Typing Animation -->
 <style>
+    body {
+      overflow-x: hidden;
+    }
+    #chatbot-box {
+      max-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+    #chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 400px;
+      scroll-behavior: smooth;
+    }
     .animate-fade-in {
       animation: fadeIn 1s ease-in-out;
     }
@@ -147,4 +197,219 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-12px) scale(1.05); }
+    }
+    .animate-pulse-initial {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+    #chatbot-icon.show {
+      opacity: 1;
+    }
+    #chatbot-box.show {
+      opacity: 1;
+    }
+    .chatbot-message {
+      max-width: 85%;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+    .chatbot-message.user {
+      background-color: #fef2f2;
+      margin-left: auto;
+      border-radius: 12px 12px 0 12px;
+    }
+    .chatbot-message.ai {
+      background-color: #fef2f2;
+      border-radius: 12px 12px 12px 0;
+    }
+    .typing-animation {
+      display: inline-flex;
+      align-items: center;
+    }
+    .typing-animation span {
+      width: 8px;
+      height: 8px;
+      background-color: #9ca3af;
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typing 1s infinite;
+    }
+    .typing-animation span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-animation span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes typing {
+      0%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-5px); }
+    }
 </style>
+
+<!-- JavaScript for Chatbot Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // DOM elements
+  const popupSound = document.getElementById('popup-sound');
+  const chatbotIcon = document.getElementById('chatbot-icon');
+  const chatbotBox = document.getElementById('chatbot-box');
+  const closeChatbot = document.getElementById('close-chatbot');
+  const chatbotInput = document.getElementById('chatbot-input');
+  const chatbotSend = document.getElementById('chatbot-send');
+  const chatbotMessages = document.getElementById('chatbot-messages');
+
+  // Flags and state
+  let hasInteracted = false;
+  let isChatbotOpen = false;
+  let isInitialPopup = false;
+
+  // Debug: Verify DOM elements
+  if (!popupSound) console.error('Audio element with ID "popup-sound" not found');
+  if (!chatbotIcon) console.error('Chatbot icon with ID "chatbot-icon" not found');
+  if (!chatbotBox) console.error('Chatbot box with ID "chatbot-box" not found');
+  if (!closeChatbot) console.error('Close chatbot button with ID "close-chatbot" not found');
+  if (!chatbotInput) console.error('Chatbot input with ID "chatbot-input" not found');
+  if (!chatbotSend) console.error('Chatbot send button with ID "chatbot-send" not found');
+  if (!chatbotMessages) console.error('Chatbot messages container with ID "chatbot-messages" not found');
+
+  // Audio debug
+  if (popupSound) {
+    popupSound.addEventListener('canplaythrough', () => console.log('Audio file loaded and ready to play'));
+    popupSound.addEventListener('error', (e) => console.error('Audio element error:', e));
+  }
+
+  // Play audio with error handling
+  const playAudio = () => {
+    if (popupSound) {
+      popupSound.play()
+        .then(() => console.log('Audio played successfully'))
+        .catch(err => console.warn('Audio playback failed:', err));
+    }
+  };
+
+  // Toggle chatbot visibility
+  const toggleChatbot = () => {
+    if (chatbotBox && chatbotIcon) {
+      isChatbotOpen = !isChatbotOpen;
+      chatbotBox.classList.toggle('hidden', !isChatbotOpen);
+      chatbotBox.classList.toggle('show', isChatbotOpen);
+      if (isChatbotOpen && hasInteracted) {
+        playAudio();
+      }
+      // Remove pulse animation after first toggle
+      if (isChatbotOpen && isInitialPopup) {
+        chatbotIcon.querySelector('button').classList.remove('animate-pulse-initial');
+        isInitialPopup = false;
+      }
+      console.log('Chatbot toggled, isOpen:', isChatbotOpen);
+    }
+  };
+
+  // Auto-open chatbot after 3 seconds
+  setTimeout(() => {
+    if (chatbotIcon && chatbotBox) {
+      chatbotIcon.classList.add('show');
+      isInitialPopup = true; // Mark initial popup
+      toggleChatbot();
+      // Attempt to play audio (likely blocked by browser)
+      playAudio();
+    }
+  }, 3000);
+
+  // Handle user interaction for audio context
+  document.body.addEventListener('click', () => {
+    if (!hasInteracted) {
+      hasInteracted = true;
+      if (isChatbotOpen && isInitialPopup) {
+        playAudio();
+        isInitialPopup = false; // Prevent replaying for initial popup
+        chatbotIcon.querySelector('button').classList.remove('animate-pulse-initial');
+      }
+      console.log('First user interaction detected');
+    }
+  }, { once: true });
+
+  // Chatbot icon click handler
+  if (chatbotIcon) {
+    chatbotIcon.addEventListener('click', toggleChatbot);
+  }
+
+  // Close chatbot handler
+  if (closeChatbot) {
+    closeChatbot.addEventListener('click', toggleChatbot);
+  }
+
+  // Send message handler
+  if (chatbotSend && chatbotInput && chatbotMessages) {
+    chatbotSend.addEventListener('click', sendMessage);
+    chatbotInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  }
+
+  async function sendMessage() {
+    const message = chatbotInput.value.trim();
+    if (!message) return;
+
+    // Display user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'chatbot-message user text-gray-800 p-3 rounded-xl mb-3';
+    userMessage.textContent = message;
+    chatbotMessages.appendChild(userMessage);
+    chatbotInput.value = '';
+
+    // Scroll to bottom
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+    // Show typing animation
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chatbot-message typing-animation bg-red-50 p-3 rounded-xl mb-3';
+    typingDiv.innerHTML = '<span></span><span></span><span></span>';
+    chatbotMessages.appendChild(typingDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+    try {
+      // Send request
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await response.json();
+
+      // Wait 4 seconds before showing response
+      setTimeout(() => {
+        typingDiv.remove();
+        const aiMessage = document.createElement('div');
+        aiMessage.className = 'chatbot-message ai text-gray-800 p-3 rounded-xl mb-3';
+        aiMessage.innerHTML = data.reply || 'Hmm... something went wrong.';
+        chatbotMessages.appendChild(aiMessage);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        if (hasInteracted) {
+          playAudio();
+        }
+      }, 4000);
+    } catch (error) {
+      setTimeout(() => {
+        typingDiv.remove();
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'chatbot-message ai text-gray-800 p-3 rounded-xl mb-3';
+        errorMessage.textContent = 'Sorry, failed to fetch response. Please try again.';
+        chatbotMessages.appendChild(errorMessage);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        console.error('Chat fetch error:', error);
+      }, 4000);
+    }
+  }
+});
+</script>

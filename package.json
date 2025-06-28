@@ -28,6 +28,7 @@
     "express": "^5.1.0",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
+    "groq-sdk": "^0.26.0",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
     "multer": "^2.0.0",

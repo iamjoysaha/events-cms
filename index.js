@@ -31,6 +31,7 @@ app.use((req, res, next) => {
     res.setHeader('Expires', '0')
     next()
 })
+app.use(express.static('public'))
 app.use(isLoggedIn)
 app.use('/', router)
 

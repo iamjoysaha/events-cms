@@ -74,6 +74,8 @@ import {
     getEventsByYear,
     getAllEvents,
     sendUpcomingEventEmails,
+    getEventsByDateRange,
+    getEventsByCategoryName,
 } from './eventsController.js'
 
 import {
@@ -190,6 +192,8 @@ export {
     getEventsByYear,
     getAllEvents,
     sendUpcomingEventEmails,
+    getEventsByDateRange,
+    getEventsByCategoryName,
 
     // posts
     createPost,
