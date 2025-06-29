@@ -64,10 +64,9 @@ async function deleteActivityByUserId(user_id) {
 }
 
 
-async function getActivities(user_id, pageNo = 1, pageSize = 50) {
+async function getActivities(pageNo = 1, pageSize = 50) {
     try {
-        const { count, rows: activities } = await Activities.findAndCountAll({ 
-            where: { user_id },
+        const { count, rows: activities } = await Activities.findAndCountAll({
             limit: pageSize,
             offset: (pageNo - 1) * pageSize,
         })

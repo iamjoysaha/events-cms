@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 
-import { createActivity, createCategory, createEvent, createImage, deleteEventById, deleteImageByEventId, deleteImagesByPostId, deletePostByEventId, deletePostById, getCategories, getCategoryById, getEventsByOrganizingCommitteeId, getImageByEventId, getImagesByPostId, getOrganizingCommitteeById, getPostsByEventId, getUserById, updateEventById, updateImageByEventId } from '../controller/index.js'
+import { createActivity, createCategory, createEvent, createImage, deleteEventById, deleteImageByEventId, deleteImagesByPostId, deletePostByEventId, deletePostById, getCategories, getCategoryById, getEventById, getEventsByOrganizingCommitteeId, getImageByEventId, getImagesByPostId, getOrganizingCommitteeById, getPostsByEventId, getUserById, updateEventById, updateImageByEventId } from '../controller/index.js'
 import { uploadImage, upload, deleteCloudinaryImage, updateCloudinaryImage } from '../services/cloudinary.js'
 
 const router = express.Router()
@@ -96,7 +96,7 @@ router.post('/event/create', upload.single('image'), async(req, res) => {
 
     await createImage({ file_name, original_filename, image_url, size, entity_id: 1, entity_type: 'event', event_id: event.id })
 
-    await createActivity({ actions: message? message : null, user_id: decoded._id })
+    await createActivity({ actions: `Created new folder: ${title}`, user_id: decoded._id })
 
     req.flash('message', message)
     res.redirect('/dashboard/events')
@@ -106,6 +106,8 @@ router.post('/event/create', upload.single('image'), async(req, res) => {
 router.post('/event/delete/:id', async (req, res) => {
     const eventId = Number(req.params.id)
     const sessionUser = req.user
+
+    const { event } = await getEventById(eventId)
 
     const { image, success } = await getImageByEventId(eventId)
     if (success && image?.file_name && image.file_name !== 'default.jpg') {
@@ -127,9 +129,12 @@ router.post('/event/delete/:id', async (req, res) => {
         await deletePostById(post.id)
     }
 
+    await createActivity({
+        actions: `Deleted folder "${event?.title || 'Untitled'}" (ID: ${eventId}) along with ${posts.length} post(s) and their images.`,
+        user_id: sessionUser._id
+    })
+    
     const { message } = await deleteEventById(eventId)
-    await createActivity({ actions: message || null, user_id: sessionUser._id })
-
     req.flash('message', message)
     res.redirect('/dashboard/events')
 })
@@ -144,7 +149,7 @@ router.post('/event/update/:id', upload.single('image'), async (req, res) => {
     const targetEvent = events.find(event => event.id === parseInt(eventId))
 
     if (!targetEvent) {
-        req.flash('message', 'Event not found!')
+        req.flash('message', 'Folder not found!')
         return res.redirect('/dashboard/events')
     }
 
@@ -180,9 +185,9 @@ router.post('/event/update/:id', upload.single('image'), async (req, res) => {
         }
     }
 
-    await createActivity({ actions: `Updated event: ${title}`, user_id: sessionUser._id })
+    await createActivity({ actions: `Updated folder "${title}" (ID: ${eventId})`, user_id: sessionUser._id })
 
-    req.flash('message', 'Event updated successfully!')
+    req.flash('message', 'Folder updated successfully!')
     res.redirect('/dashboard/events')
 })
 

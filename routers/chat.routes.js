@@ -1,6 +1,7 @@
 import express from 'express'
 import moment from 'moment'
 import { getChatCompletion } from '../services/groq.js'
+import { formatTime, formatDate } from '../services/formatter.js'
 import {
   getAllUpcomingPosts,
   getCategories,
@@ -10,7 +11,6 @@ import {
   getPostsByOrganizerName,
   getPostsByStatus,
 } from '../controller/index.js'
-
 const router = express.Router()
 
 router.post('/chat', async (req, res) => {
@@ -29,11 +29,10 @@ router.post('/chat', async (req, res) => {
           `<div class="event-card">
             <strong>🎉 ${p.title}</strong><br/>
             📍 <strong>Venue:</strong> ${p.venue || 'TBD'}<br/>
-            🗓️ <strong>Date:</strong> ${p.date || 'TBD'}<br/>
-            ⏰ <strong>Time:</strong> ${p.time || 'TBD'}<br/>
+            🗓️ <strong>Date:</strong> ${formatDate(p.date) || 'TBD'}<br/>
+            ⏰ <strong>Time:</strong> ${formatTime(p.time) || 'TBD'}<br/>
             👥 <strong>Organizer:</strong> ${p.organizer || 'Unknown'}<br/>
-            📂 <strong>Category:</strong> ${p.category || 'N/A'}<br/>
-            🔗 <a href="/events/posts/post/${p.id}" target="_blank" class="text-blue-600 underline">View Event</a>
+            🔗 <a href="/events/posts/post/${p.id}" class="text-blue-600 underline">View Event</a>
           </div>`
         ).join('<hr class="my-3"/>')
         return res.json({ reply })
@@ -48,10 +47,11 @@ router.post('/chat', async (req, res) => {
         reply = posts.map(p =>
           `<div class="event-card">
             <strong>📌 ${p.title}</strong><br/>
-            📅 <strong>Date:</strong> ${p.date || 'TBD'}<br/>
+            🗓️ <strong>Date:</strong> ${formatDate(p.date) || 'TBD'}<br/>
+            ⏰ <strong>Time:</strong> ${formatTime(p.time) || 'TBD'}<br/>
             📍 <strong>Venue:</strong> ${p.venue || 'TBD'}<br/>
             🔖 <strong>Status:</strong> ${p.status}<br/>
-            🔗 <a href="/events/posts/post/${p.id}" target="_blank" class="text-blue-600 underline">View Post</a>
+            🔗 <a href="/events/posts/post/${p.id}" class="text-blue-600 underline">View Post</a>
           </div>`
         ).join('<hr class="my-3"/>')
         return res.json({ reply })
@@ -69,11 +69,10 @@ router.post('/chat', async (req, res) => {
           `<div class="event-card">
             <strong>🎉 ${p.title}</strong><br/>
             📍 <strong>Venue:</strong> ${p.venue || 'TBD'}<br/>
-            🗓️ <strong>Date:</strong> ${p.date || 'TBD'}<br/>
-            ⏰ <strong>Time:</strong> ${p.time || 'TBD'}<br/>
+            🗓️ <strong>Date:</strong> ${formatDate(p.date) || 'TBD'}<br/>
+            ⏰ <strong>Time:</strong> ${formatTime(p.time) || 'TBD'}<br/>
             👥 <strong>Organizer:</strong> ${p.organizer || 'Unknown'}<br/>
-            📂 <strong>Category:</strong> ${p.category || 'N/A'}<br/>
-            🔗 <a href="/events/posts/post/${p.id}" target="_blank" class="text-blue-600 underline">View Event</a>
+            🔗 <a href="/events/posts/post/${p.id}" class="text-blue-600 underline">View Event</a>
           </div>`
         ).join('<hr class="my-3"/>')
         return res.json({ reply })
@@ -91,14 +90,14 @@ router.post('/chat', async (req, res) => {
           reply = events.events.map(e =>
             `<div class="event-card">
               <strong>🏷️ ${e.title}</strong><br/>
-              🗓️ <strong>Date:</strong> ${e.date || 'TBD'}<br/>
+             🗓️ <strong>Date:</strong> ${formatDate(e.date) || 'TBD'}<br/>
               📍 <strong>Venue:</strong> ${e.venue || 'TBD'}<br/>
-              🔗 <a href="/events/posts/post/${e.id}" target="_blank" class="text-blue-600 underline">View Post</a>
+              🔗 <a href="/events/posts/post/${e.id}" class="text-blue-600 underline">View Post</a>
             </div>`
           ).join('<hr class="my-3"/>')
           return res.json({ reply })
         } else {
-          reply = `<p>No events found for the <strong>${matchedCategory}</strong> category.</p>`
+          reply = `<p>No shows found for the <strong>${matchedCategory}</strong> category.</p>`
           return res.json({ reply })
         }
       }
@@ -113,14 +112,14 @@ router.post('/chat', async (req, res) => {
         events.events.map(e =>
           `<div class="event-card">
             <strong>⏰ ${e.title}</strong><br/>
-            🗓️ <strong>Date:</strong> ${e.date || 'TBD'}<br/>
+            🗓️ <strong>Date:</strong> ${formatDate(e.date) || 'TBD'}<br/>
             📍 <strong>Venue:</strong> ${e.venue || 'TBD'}<br/>
-            🔗 <a href="/events/posts/post/${e.id}" target="_blank" class="text-blue-600 underline">View Post</a>
+            🔗 <a href="/events/posts/post/${e.id}" class="text-blue-600 underline">View Post</a>
           </div>`
         ).join('<hr class="my-3"/>')
         return res.json({ reply })
       } else {
-        reply = `<p>No events found for tomorrow.</p>`
+        reply = `<p>No shows found for tomorrow.</p>`
         return res.json({ reply })
       }
     }
@@ -134,14 +133,14 @@ router.post('/chat', async (req, res) => {
         reply = events.events.map(e =>
           `<div class="event-card">
             <strong>📅 ${e.title}</strong><br/>
-            🗓️ <strong>Date:</strong> ${e.date || 'TBD'}<br/>
+            🗓️ <strong>Date:</strong> ${formatDate(e.date) || 'TBD'}<br/>
             📍 <strong>Venue:</strong> ${e.venue || 'TBD'}<br/>
-            🔗 <a href="/events/posts/post/${e.id}" target="_blank" class="text-blue-600 underline">View Post</a>
+            🔗 <a href="/events/posts/post/${e.id}" class="text-blue-600 underline">View Post</a>
           </div>`
         ).join('<hr class="my-3"/>')
         return res.json({ reply })
       } else {
-        reply = `<p>No events found for next month.</p>`
+        reply = `<p>No shows found for next month.</p>`
         return res.json({ reply })
       }
     }

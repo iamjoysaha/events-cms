@@ -100,7 +100,8 @@ router.post('/post/create/:id', upload.array('images'), async (req, res) => {
         }
     }
 
-    await createActivity({ actions: message || null, user_id: sessionUser._id })
+    await createActivity({ actions: `Created post: ${title}`, user_id: sessionUser._id })
+
     req.flash('message', message)
     res.redirect(`/dashboard/posts/post/${event_id}`)
 })
@@ -125,7 +126,8 @@ router.post('/post/delete/:id', upload.array('images'), async(req, res)=> {
         return res.redirect(`/dashboard/posts/post/${event_id}`)
     }
 
-    await createActivity({ actions: message || null, user_id: sessionUser._id })
+    await createActivity({ actions: `Deleted post (ID: ${post_id})`, user_id: sessionUser._id })
+
     req.flash('message', message)
     return res.redirect(`/dashboard/posts/post/${event_id}`)
 })
@@ -183,7 +185,7 @@ router.post('/post/update/:id', upload.array('images'), async (req, res) => {
     }
 
 
-    await createActivity({ actions: `Updated post: ${title}`, user_id: sessionUser._id })
+    await createActivity({ actions: `Updated post "${title}" (ID: ${post_id})`, user_id: sessionUser._id })
 
     req.flash('message', message)
     res.redirect(`/dashboard/posts/post/${req.session.eventId}`)

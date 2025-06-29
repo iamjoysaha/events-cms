@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import express from 'express'
 import bcrypt from 'bcrypt'
 
-import { createActivity, createUser, deleteBookingsByUser, deleteUserById, getActiveUsers, getActivities, getAllPosts, getAllUpcomingPosts, getCategories, getCategoryById, getEventById, getEventsByOrganizingCommitteeId, getOnlyUsers, getOrganizingCommitteeById, getPostsByEventId, getTotalViews, getUserById, updateUserById } from '../controller/index.js'
+import { createActivity, createUser, deleteBookingsByUser, deleteUserById, getActiveUsers, getActivities, getAllPosts, getAllUpcomingPosts, getCategories, getCategoryById, getEventById, getEventsByOrganizingCommitteeId, getOnlyUsers, getOrganizingCommitteeById, getPostsByEventId, getTotalViews, getUserById, getUsersByRoleId, updateUserById } from '../controller/index.js'
 import { getStatus } from '../services/status.js'
 import { sendMailToRegisteredUser } from '../services/mail.js'
 
@@ -24,14 +24,16 @@ router.get('/', async (req, res) => {
     const { posts = [] } = await getAllPosts()
     const upcomingEvents = posts.filter(post => getStatus(post.date, post.time) === 'upcoming')
 
-    const { activities = [],  totalRecords } = await getActivities(user.id, pageNo, pageSize)
+    const { activities = [],  totalRecords } = await getActivities(pageNo, pageSize)
     const totalPages = Math.ceil(totalRecords / pageSize)
 
     const { totalViews } = await getTotalViews()
+    const allAdmins = await getUsersByRoleId(1)
     
     res.render('pages/dashboard/home', { 
         layout:'layouts/dashboardLayout',  
         admin: user,
+        totalAdminCount: allAdmins.users.length,
         activities,
         totalViews,
         activeUsers: users,
@@ -90,8 +92,8 @@ router.post('/user/create', async (req, res) => {
     }
 
     const { message } = await createUser({ first_name, last_name, email, password, username, status: 1, is_owner: true, organizing_committee_id, role_id })
+    await createActivity({ actions: `Created user: ${first_name} ${last_name} (${email})`, user_id: sessionUser._id })
 
-    await createActivity({ actions: message || null, user_id: sessionUser._id })
     req.flash('message', message)
     res.redirect(`/dashboard/users`)
 })
@@ -105,8 +107,10 @@ router.post('/delete/user/:id', async (req, res) => {
     const id = req.params.id
     const { user } = await getUserById(id)
     await deleteBookingsByUser(user.id)
+
     const { message } = await deleteUserById(user.id)
-    await createActivity({ actions: message? message : null, user_id: decoded._id })
+    await createActivity({ actions: `Deleted user: ${user.first_name} ${user.last_name} (${user.email})`, user_id: decoded._id })
+
 
     req.flash('message', message)
     return res.redirect('/dashboard/users')
@@ -141,7 +145,7 @@ router.post('/settings/update/profile', async (req, res) => {
         email,
     })
 
-    await createActivity({ actions: message? message : null, user_id: decoded._id })
+    await createActivity({ actions: `Updated profile info: ${first_name} ${last_name} (${email})`, user_id: decoded._id })
 
     req.flash('message', message)
     return res.redirect('/dashboard/settings')
@@ -174,7 +178,7 @@ router.post('/settings/update/password', async (req, res) => {
     }
 
     const { message } = await updateUserById(user.id, { password: newPassword })
-    await createActivity({ actions: message? message : null, user_id: decoded._id })
+    await createActivity({ actions: `Updated account password`, user_id: decoded._id })
 
     req.flash('message', message)
     return res.redirect('/dashboard/settings')
@@ -238,21 +242,26 @@ router.get('/notify/:id', async (req, res) => {
 
     const { user: admin } = await getUserById(decoded._id)
     const { user } = await getUserById(userId)
-    const { posts } = await getAllUpcomingPosts()
-    
-    if (!user || posts.length === 0) {
-      req.flash('message', 'User or posts not found!')
+    const { posts = [] } = await getAllUpcomingPosts()
+
+    if (!user || user.length === 0) {
+      req.flash('message', 'No user found!')
+      return res.redirect('/dashboard/users')
+    }
+
+    if (!posts || posts.length === 0) {
+      req.flash('message', 'No upcoming posts found!')
       return res.redirect('/dashboard/users')
     }
 
     await sendMailToRegisteredUser({
-        name: `${admin.first_name} ${admin.last_name}`,
+        name: `Event CMS Team`,
         adminEmail: admin.email,
         email: user.email,
-        subject: 'Upcoming Events Notification',
+        subject: 'Upcoming Shows Notification',
         message: `<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
                     <p>Hi ${user.first_name},</p>
-                    <p>Here are the upcoming posts/events:</p>
+                    <p>Here are the upcoming shows:</p>
                     ${posts.map(post => `
                     <div style="margin-bottom: 12px;">
                         <strong>${post.title}</strong><br/>
@@ -263,6 +272,8 @@ router.get('/notify/:id', async (req, res) => {
                     <p style="margin-top: 16px;">Regards,<br/>Event CMS Team</p>
                 </div>`
     })
+
+    await createActivity({ actions: `Sent upcoming events email to ${user.first_name} (${user.email})`, user_id: decoded._id })
 
     req.flash('message', `Email successfully sent to ${user.email}!`)
     res.redirect('/dashboard/users')
@@ -277,8 +288,13 @@ router.get('/notifyAll', async (req, res) => {
     const { users } = await getActiveUsers(decoded._id)
     const { posts } = await getAllUpcomingPosts()
 
-    if (!users || users.length === 0 || !posts || posts.length === 0) {
-      req.flash('message', 'No users or upcoming posts found!')
+    if (!users || users.length === 0) {
+      req.flash('message', 'No users found!')
+      return res.redirect('/dashboard/users')
+    }
+
+    if (!posts || posts.length === 0) {
+      req.flash('message', 'No upcoming posts found!')
       return res.redirect('/dashboard/users')
     }
 
@@ -286,13 +302,13 @@ router.get('/notifyAll', async (req, res) => {
       const userData = user.dataValues
 
       await sendMailToRegisteredUser({
-        name: `${admin.first_name} ${admin.last_name}`,
+        name: `Event CMS Team`,
         adminEmail: admin.email,
         email: userData.email,
         subject: 'Upcoming Events Notification',
         message: `<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333;">
                     <p>Hi ${userData.first_name},</p>
-                    <p>Here are the upcoming posts/events:</p>
+                    <p>Here are the upcoming shows:</p>
                     ${posts.map(post => `
                       <div style="margin-bottom: 12px;">
                         <strong>${post.title}</strong><br/>
@@ -306,6 +322,8 @@ router.get('/notifyAll', async (req, res) => {
                     <p style="margin-top: 16px;">Regards,<br/>Event CMS Team</p>
                   </div>`
       })
+
+      await createActivity({ actions: `Sent upcoming events email to ${userData.first_name} (${userData.email})`, user_id: decoded._id })
     }
 
     req.flash('message', 'Emails successfully sent to all active users!')

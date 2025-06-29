@@ -1,6 +1,6 @@
 <div class="bg-white p-4 sm:p-6 rounded-lg shadow">
   <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-1 space-y-4 sm:space-y-0">
-    <h3 class="text-base sm:text-lg md:text-xl font-semibold text-gray-700">Manage Posts for <%= eventName %></h3>
+    <h3 class="text-base sm:text-lg md:text-xl font-semibold text-gray-700">Manage Shows for <%= eventName %></h3>
     <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
       <div>
         <label class="block text-sm font-medium mb-1" for="filterStatusSelect">Filter by Status</label>
@@ -27,7 +27,7 @@
       <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
         <path d="M15 19l-7-7 7-7"></path>
       </svg>
-      Back to events
+      Back to folders
     </a>
   </div>
 
@@ -36,7 +36,7 @@
       <thead class="text-gray-600 border-b">
         <tr>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">ID</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Post Title</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Show Name</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Description</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Venue</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Location</th>
@@ -44,7 +44,7 @@
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Organized By</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Date</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Time</th>
-          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Price</th>
+          <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Price (in ₹)</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Status</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Views</th>
           <th class="py-2 px-2 sm:px-4 font-medium whitespace-nowrap min-w-[100px] font-medium whitespace-nowrap">Actions</th>
@@ -98,7 +98,7 @@
           <% }) %>
         <% } else { %>
           <tr>
-            <td colspan="11" class="py-4 px-2 sm:px-4 text-center text-gray-500 text-sm sm:text-base">No posts found</td>
+            <td colspan="11" class="py-4 px-2 sm:px-4 text-center text-gray-500 text-sm sm:text-base">No Shows found</td>
           </tr>
         <% } %>
       </tbody>
@@ -151,7 +151,7 @@
 
         <form action="/dashboard/posts/post/update/<%= post.id %>?status=<%= selectedStatus || '' %>&date=<%= selectedDate || '' %>" id="editPostForm-<%= post.id %>" class="space-y-4" method="POST" enctype="multipart/form-data">
           <div>
-            <label for="editPostTitle-<%= post.id %>" class="block text-sm sm:text-base font-medium mb-1">Title</label>
+            <label for="editPostTitle-<%= post.id %>" class="block text-sm sm:text-base font-medium mb-1">Show Name</label>
             <input type="text" id="editPostTitle-<%= post.id %>" name="title" value="<%= post.title %>" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
           </div>
 
@@ -191,7 +191,7 @@
           </div>
 
           <div>
-            <label for="editPostPrice-<%= post.id %>" class="block text-sm sm:text-base font-medium mb-1">Price</label>
+            <label for="editPostPrice-<%= post.id %>" class="block text-sm sm:text-base font-medium mb-1">Price (in ₹)</label>
             <input type="number" id="editPostPrice-<%= post.id %>" name="price" value="<%= post.price %>" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
           </div>
 
@@ -227,7 +227,7 @@
 
     <form action="/dashboard/posts/post/create/<%= eventId %>?status=<%= selectedStatus || '' %>&date=<%= selectedDate || '' %>" id="addPostForm" class="space-y-4" method="POST" enctype="multipart/form-data">
       <div>
-        <label for="postTitle" class="block text-sm sm:text-base font-medium mb-1">Title</label>
+        <label for="postTitle" class="block text-sm sm:text-base font-medium mb-1">Show Name</label>
         <input type="text" id="postTitle" name="title" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
       </div>
 
@@ -267,7 +267,7 @@
       </div>
 
       <div>
-        <label for="postDate" class="block text-sm sm:text-base font-medium mb-1">Price</label>
+        <label for="postDate" class="block text-sm sm:text-base font-medium mb-1">Price (in ₹)</label>
         <input type="number" id="postPrice" name="price" required class="w-full border rounded px-3 py-2 text-sm sm:text-base focus:ring-blue-500" />
       </div>
 

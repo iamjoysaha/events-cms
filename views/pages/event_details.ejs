@@ -66,7 +66,7 @@
 
         <!-- Explore Events -->
         <div class="w-full lg:w-3/4 mx-auto">
-          <h2 class="text-2xl text-gray-800 font-bold mb-5 text-center">Find many posts of <%= event.title %> here!</h2>
+          <h2 class="text-2xl text-gray-800 font-bold mb-5 text-center">Find many shows of <%= event.title %> here!</h2>
           <div class="flex flex-wrap justify-center gap-6">
             <% if (postsWithImages && postsWithImages.length) { %>
               <% postsWithImages.forEach(post => { %>
@@ -93,7 +93,7 @@
                 </a>
               <% }) %>
             <% } else { %>
-              <p class="text-gray-500 text-center mt-4">No posts available!</p>
+              <p class="text-gray-500 text-center mt-4">No shows available!</p>
             <% } %>
           </div>
 

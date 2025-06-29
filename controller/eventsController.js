@@ -2,6 +2,7 @@ import { Op } from 'sequelize'
 import moment from 'moment'
 import { Events, Posts, Users, Category } from '../models/index.js'
 import { sendMailToRegisteredUser } from '../services/mail.js'
+import { formatDate, formatTime } from '../services/formatter.js'
 
 async function createEvent({title, description, date, category_id, organizing_committee_id, role_id}) {
     if (!title || !date || !category_id || !organizing_committee_id || !role_id) {
@@ -10,33 +11,33 @@ async function createEvent({title, description, date, category_id, organizing_co
 
     try {
         const event = await Events.create({title, description, date, category_id, organizing_committee_id, role_id})
-        return { success: true, message: 'Event created!', event }
+        return { success: true, message: 'Folder created!', event }
     }
     catch(error) {
         console.error('Exception occurred inside createEvent!\n', error)
-        return { success: false, message: 'Exception::: Event creation failed!' }
+        return { success: false, message: 'Exception::: Folder creation failed!' }
     }
 }
 
 async function deleteEventById(id) {
     try {
         const event = await Events.destroy({ where: { id }})
-        return { success: true, message: 'Event deleted!' }
+        return { success: true, message: 'Folder deleted!' }
     }
     catch (error) {
         console.log('Exception occured inside deleteEventById!\n', error)
-        return { success: false, message: 'Exception::: Unable to delete event or event not found!'}
+        return { success: false, message: 'Exception::: Unable to delete folder or folder not found!'}
     }
 }
 
 async function deleteEventByOrganizingCommitteeId(organizing_committee_id) {
     try {
         const event = await Events.destroy({ where: { organizing_committee_id }})
-        return { success: true, message: 'Event deleted!' }
+        return { success: true, message: 'Folder deleted!' }
     }
     catch (error) {
         console.log('Exception occured inside deleteEventByOrganizingCommitteeId!\n', error)
-        return { success: false, message: 'Exception::: Unable to delete event or event not found!'}
+        return { success: false, message: 'Exception::: Unable to delete folder or folder not found!'}
     }
 }
 
@@ -49,12 +50,12 @@ async function updateEventById(id, updates) {
         }
 
         const updatedEvent = await Events.findByPk(id)
-        return { success: true, message: 'Event updated successfully!', updatedEvent }
+        return { success: true, message: 'Folder updated successfully!', updatedEvent }
 
     } 
     catch (error) {
         console.error('Exception occurred inside updateEventById!\n', error)
-        return { success: false, message: 'Exception::: Unable to update event!' }
+        return { success: false, message: 'Exception::: Unable to update folder!' }
     }
 }
 
@@ -62,11 +63,11 @@ async function getEventsByCategoryId(category_id) {
     try {
         const events = await Events.findAll({ where: { category_id } })
         return events.length ? { success: true, events } : 
-                               { success: false, message: 'Events not found!' }
+                               { success: false, message: 'Folders not found!' }
     } 
     catch (error) {
         console.error('Exception occurred inside getEventsByCategoryId!\n', error)
-        return { success: false, message: 'Exception::: Events not found!' }
+        return { success: false, message: 'Exception::: Folders not found!' }
     }
 }
 
@@ -79,14 +80,14 @@ async function getEventsByOrganizingCommitteeId(organizing_committee_id, pageNo 
         })
 
         if(!events || !events.length) {
-            return { success: false, message: 'Events not found!'}
+            return { success: false, message: 'Folders not found!'}
         }
     
         return { success: true, events, totalRecords: count }
     }
     catch(error) {
         console.log('Exception occured inside getEventsByOrganizingCommitteeId!\n', error)
-        return { success: false, message: 'Exception::: Events not found!'}
+        return { success: false, message: 'Exception::: Folders not found!'}
     }
 }
 
@@ -95,14 +96,14 @@ async function getEventsByRoleId(role_id) {
         const events = await Events.findAll({ where: { role_id } })
     
         if(!events || !events.length) {
-            return { success: false, message: 'Events not found!'}
+            return { success: false, message: 'Folders not found!'}
         }
     
         return { success: true, events }
     }
     catch (error) {
         console.error('Exception occurred inside getEventsByRoleId!\n', error)
-        return { success: false, message: 'Exception::: Events not found!'}
+        return { success: false, message: 'Exception::: Folders not found!'}
     }
 
 }
@@ -113,11 +114,11 @@ async function getEventById(id) {
 
         return event ? 
             { success: true, event } : 
-            { success: false, message: 'Event not found!' }
+            { success: false, message: 'Folder not found!' }
     }
     catch(error) {
         console.error('Exception occurred inside getEventById!\n', error)
-        return { success: false, message: 'Exception::: Event not found!'}
+        return { success: false, message: 'Exception::: Folder not found!'}
     }
 }
 
@@ -129,14 +130,14 @@ async function getAllEvents(pageNo = 1, pageSize = 50) {
         })
     
         if(!events || !events.length) {
-            return { success: false, message: 'Events not found!'}
+            return { success: false, message: 'Folders not found!'}
         }
     
         return { success: true, events, totalRecords: count }
     }
     catch (error) {
         console.error('Exception occurred inside getAllEvents!\n', error)
-        return { success: false, message: 'Exception::: Events not found!'}
+        return { success: false, message: 'Exception::: Folders not found!'}
     }
 }
 
@@ -150,7 +151,7 @@ async function getEventsByYear(id, date) {
         const response = await Events.findByPk(id)
 
         if (!response.success || !response.events.length) {
-            return { success: false, message: 'No events found for given ID' }
+            return { success: false, message: 'No folders found for given ID' }
         }
 
         const targetYear = date.split('/')[2] // date -> 17/05/2025 -> 2025
@@ -163,7 +164,7 @@ async function getEventsByYear(id, date) {
     }
     catch(error) {
         console.log('Exception occured inside getEventsByYear!\n', error)
-        return { success: false, message: 'Exception::: No events found for given ID!' }
+        return { success: false, message: 'Exception::: No folders found for given ID!' }
     }
 }
 
@@ -179,20 +180,20 @@ async function sendUpcomingEventEmails() {
 
     const eventList = upcomingEvents.map(event => {
       return `<li><strong>${event.title}</strong><br>
-                  Date: ${event.date}<br>
-                  Time: ${event.time}<br>
+                  Date: ${formatDate(event.date)}<br>
+                  Time: ${formatTime(event.time)}<br>
                   Venue: ${event.venue || 'To be announced'}</li>`
     }).join('')
 
     const emailMessage = `<p>Hello <strong>{{firstName}} {{lastName}}</strong>,</p>
-                          <p>We hope you're doing well! This is a friendly reminder about the upcoming events for today:</p>
+                          <p>We hope you're doing well! This is a friendly reminder about the upcoming shows for today:</p>
                           <ul>${eventList}</ul>
                           <p>Make sure to mark your calendar — we’d love to see you there!</p>
                           <p>Best regards,<br>Events CMS Team</p>`
 
     for (const user of registeredActiveUsers) {
       await sendMailToRegisteredUser({
-        name: `${user.first_name} ${user.last_name}`,
+        name: `Event CMS Team`,
         adminEmail: null,
         email: user.email,
         subject: `Today's Upcoming Events`,

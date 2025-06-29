@@ -23,6 +23,7 @@ import {
     getImageByEventId,
     deleteActivityByUserId,
     deleteBookingsByUser,
+    createActivity,
 } from '../controller/index.js'
 import { deleteCloudinaryImage } from '../services/cloudinary.js'
 
@@ -71,9 +72,15 @@ router.post('/create', async (req, res) => {
     }
 
     const { message } = await createUser({ first_name, last_name, email, password, username, status: 1, is_owner: true, organizing_committee_id: finalOrganizingCommitteeId, role_id })
+
+    const token = req.cookies?.token
+    if (token) {
+        const decoded = jwt.verify(token, process.env.MY_SECRET_KEY)
+        await createActivity({ actions: `Registered new user: ${first_name} ${last_name} (${email})`, user_id: decoded?._id })
+    }
     
     req.flash('message', message)
-    res.redirect(`/users/register`)
+    res.redirect(`/users/login`)
 })
 
 // profile page only for users
@@ -110,12 +117,20 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ _id: user.id, email: user.email, role_id: user.role_id, organizing_committee_id: user.organizing_committee_id }, process.env.MY_SECRET_KEY, { expiresIn: '24h' })
     res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000 })
 
+    if (token) {
+        const decoded = jwt.verify(token, process.env.MY_SECRET_KEY)
+        await createActivity({
+            actions: `User logged in: ${user.first_name} ${user.last_name} (${user.email})`,
+            user_id: decoded?._id
+        })
+    }
+
     req.flash('message', message)
     return res.redirect('/')
 })
 
 // login page
-router.get('/login', (req, res) => {
+router.get('/login', async (req, res) => {
     const notify = req.flash('message')[0]
 
     res.clearCookie('connect.sid')
@@ -126,9 +141,19 @@ router.get('/login', (req, res) => {
 })
 
 // logout
-router.all('/logout', (req, res) => { // TODO: NOT DESTROYING SESSION FOR NOW!
+router.all('/logout', async (req, res) => { // TODO: NOT DESTROYING SESSION FOR NOW!
   req.flash('message', 'Logged out successfully!')
 
+  const token = req.cookies?.token
+  if (token) {
+    const decoded = jwt.verify(token, process.env.MY_SECRET_KEY)
+    const { user } = await getUserById(decoded._id)
+    await createActivity({
+        actions: `User: ${user.first_name} ${user.last_name} logged out`,
+        user_id: decoded?._id
+    })
+  }
+  
   res.clearCookie('connect.sid')
   res.clearCookie('token')
   res.redirect('/users/login')
@@ -143,6 +168,11 @@ router.post('/delete/user/:id', async (req, res) => {
         req.flash('message', userMsg)
         return res.redirect(`/users/user/${userId}`)
     }
+
+    await createActivity({
+        actions: `Deleted user account: ${user.first_name} ${user.last_name} (${user.email})`,
+        user_id: user.id
+    })
 
     await deleteBookingsByUser(user.id)
     const { message } = await deleteUserById(user.id)
@@ -187,6 +217,11 @@ router.post('/delete/:id', async (req, res) => {
     }
 
     await deleteBookingsByUser(user.id)
+    await createActivity({
+        actions: `Deleted user account: ${user.first_name} ${user.last_name} (${user.email})`,
+        user_id: user.id
+    })
+
     const { success, message } = await deleteUserById(user.id)
 
     if (!success) {
