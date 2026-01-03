@@ -48,5 +48,5 @@ scheduler()
 
 // server
 app.listen(process.env.DB_PORT, () => {
-    console.log(`\n::: Server started at port number: ${process.env.DB_PORT} ::::\n`)
+    console.log(`\nServer started at http://localhost:${process.env.DB_PORT}\n`)
 })
